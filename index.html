@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Stock Wise</title>
+  <link rel="stylesheet" href="style/style.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css">
+</head>
+<body>
+  <header>
+    <h1><i class="fas fa-chart-line"></i> Stock Wise</h1>
+    <p class="tagline">Smart insights for smarter investments</p>
+  </header>
+
+  <nav>
+    <button class="nav-btn active" onclick="showSection('analyzer')"><i class="fas fa-analytics"></i> Analyzer</button>
+    <button class="nav-btn" onclick="showSection('news')"><i class="fas fa-newspaper"></i> News</button>
+    <button class="nav-btn" onclick="showSection('overview')"><i class="fas fa-globe"></i> Markets</button>
+    <button class="nav-btn" onclick="showSection('knowledge')"><i class="fas fa-book"></i> Knowledge Hub</button>
+  </nav>
+  
+  <main>
+    <section id="analyzer" class="active-section">
+      <div class="search-container">
+        <input type="text" id="symbolInput" placeholder="Enter stock symbol (e.g. AAPL)">
+        <button id="analyzeBtn" onclick="getStockData()">Analyze</button>
+      </div>
+      
+      <div id="loaderContainer" class="loader-container" style="display:none;">
+        <div class="loader"></div>
+        <p>Fetching stock data...</p>
+      </div>
+      
+      <div id="errorContainer" class="error-container" style="display:none;">
+        <i class="fas fa-exclamation-triangle"></i>
+        <p id="errorMessage"></p>
+      </div>
+      
+      <div id="resultContainer" style="display:none;">
+        <div class="stock-header">
+          <h2 id="stockName">Stock Analysis</h2>
+          <span id="stockPrice" class="stock-price"></span>
+          <span id="priceChange" class="price-change"></span>
+        </div>
+        
+        <div class="chart-container">
+          <canvas id="stockChart"></canvas>
+        </div>
+        
+        <div class="analysis-grid">
+          <div id="insights" class="analysis-card">
+            <h3><i class="fas fa-chart-bar"></i> Key Insights</h3>
+            <div id="insightsContent"></div>
+          </div>
+          
+          <div id="prediction" class="analysis-card">
+            <h3><i class="fas fa-magic"></i> Predictions</h3>
+            <div id="predictionContent"></div>
+          </div>
+          
+          <div id="technicals" class="analysis-card">
+            <h3><i class="fas fa-calculator"></i> Technical Indicators</h3>
+            <div id="technicalsContent"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="news" style="display:none;">
+      <h2><i class="fas fa-newspaper"></i> Latest Stock News</h2>
+      <div id="newsLoader" class="loader-container">
+        <div class="loader"></div>
+        <p>Loading latest news...</p>
+      </div>
+      <div id="newsContent" class="news-grid"></div>
+    </section>
+
+    <section id="overview" style="display:none;">
+      <h2><i class="fas fa-globe"></i> Global Market Overview</h2>
+      <div id="overviewLoader" class="loader-container">
+        <div class="loader"></div>
+        <p>Loading market data...</p>
+      </div>
+      <div id="overviewContent" class="market-grid"></div>
+    </section>
+
+    <section id="knowledge" style="display:none;">
+      <h2><i class="fas fa-book"></i> Stock Market Knowledge Hub</h2>
+      
+      <div class="knowledge-grid">
+        <div class="knowledge-card">
+          <h3>Stock Market Basics</h3>
+          <p>Learn the fundamentals of stock markets, how they work, and key terminology every investor should know.</p>
+          <button class="knowledge-btn" onclick="expandKnowledge('basics')">Learn More</button>
+          <div id="basics-content" class="knowledge-content" style="display:none;"></div>
+        </div>
+        
+        <div class="knowledge-card">
+          <h3>Technical Analysis</h3>
+          <p>Understand chart patterns, indicators, and technical analysis methods to make data-driven investment decisions.</p>
+          <button class="knowledge-btn" onclick="expandKnowledge('technical')">Learn More</button>
+          <div id="technical-content" class="knowledge-content" style="display:none;"></div>
+        </div>
+        
+        <div class="knowledge-card">
+          <h3>Fundamental Analysis</h3>
+          <p>Discover how to evaluate a company's financial health, read financial statements, and assess intrinsic value.</p>
+          <button class="knowledge-btn" onclick="expandKnowledge('fundamental')">Learn More</button>
+          <div id="fundamental-content" class="knowledge-content" style="display:none;"></div>
+        </div>
+        
+        <div class="knowledge-card">
+          <h3>Investment Strategies</h3>
+          <p>Explore different investment approaches, from value investing to growth strategies and passive investing.</p>
+          <button class="knowledge-btn" onclick="expandKnowledge('strategies')">Learn More</button>
+          <div id="strategies-content" class="knowledge-content" style="display:none;"></div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p>&copy; 2025 Stock Wise | Data provided by Alpha Vantage</p>
+    <p class="disclaimer">This application is for educational purposes only. Not financial advice.</p>
+  </footer>
+
+  <script src="js/main.js"></script>
+</body>
+</html>
