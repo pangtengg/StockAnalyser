@@ -1,0 +1,87 @@
+/* components.css */
+.nav-btn {
+  margin: 0.5rem;
+  padding: 0.75rem 1.25rem;
+  background-color: #ffffff;
+  color: #3498db;
+  border: 2px solid #e9ecef;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.2s ease;
+}
+
+.nav-btn:hover {
+  background-color: #f1f8ff;
+  border-color: #3498db;
+}
+
+.nav-btn.active {
+  background-color: #3498db;
+  color: white;
+  border-color: #3498db;
+}
+
+#symbolInput {
+  padding: 0.75rem 1rem;
+  border: 2px solid #e9ecef;
+  border-radius: 6px 0 0 6px;
+  font-size: 1rem;
+  width: 250px;
+  outline: none;
+  transition: border-color 0.2s ease;
+}
+
+#symbolInput:focus {
+  border-color: #3498db;
+}
+
+#analyzeBtn {
+  padding: 0.75rem 1.5rem;
+  background-color: #3498db;
+  color: white;
+  border: none;
+  border-radius: 0 6px 6px 0;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: 600;
+  transition: background-color 0.2s ease;
+}
+
+#analyzeBtn:hover {
+  background-color: #2980b9;
+}
+
+.loader-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+}
+
+.loader {
+  border: 5px solid #f3f3f3;
+  border-top: 5px solid #3498db;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  animation: spin 1s linear infinite;
+}
+
+.error-container {
+  text-align: center;
+  padding: 2rem;
+  color: #e74c3c;
+}
+
+.error-container i {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+}
+
+.tagline {
+  margin: 0.5rem 0 0;
+  opacity: 0.9;
+  font-size: 1.1rem;
+}

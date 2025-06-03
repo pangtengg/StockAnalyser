@@ -6,6 +6,7 @@
   <title>Stock Wise</title>
   <link rel="stylesheet" href="style/style.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-chart-financial@0.1.0"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css">
 </head>
 <body>
@@ -15,54 +16,87 @@
   </header>
 
   <nav>
-    <button class="nav-btn active" onclick="showSection('analyzer')"><i class="fas fa-analytics"></i> Analyzer</button>
+    <button class="nav-btn active" onclick="showSection('analyzer')"><i class="fas fa-analytics"></i> Dashboard</button>
     <button class="nav-btn" onclick="showSection('news')"><i class="fas fa-newspaper"></i> News</button>
-    <button class="nav-btn" onclick="showSection('overview')"><i class="fas fa-globe"></i> Markets</button>
     <button class="nav-btn" onclick="showSection('knowledge')"><i class="fas fa-book"></i> Knowledge Hub</button>
   </nav>
   
   <main>
     <section id="analyzer" class="active-section">
-      <div class="search-container">
-        <input type="text" id="symbolInput" placeholder="Enter stock symbol (e.g. AAPL)">
-        <button id="analyzeBtn" onclick="getStockData()">Analyze</button>
-      </div>
-      
-      <div id="loaderContainer" class="loader-container" style="display:none;">
-        <div class="loader"></div>
-        <p>Fetching stock data...</p>
-      </div>
-      
-      <div id="errorContainer" class="error-container" style="display:none;">
-        <i class="fas fa-exclamation-triangle"></i>
-        <p id="errorMessage"></p>
-      </div>
-      
-      <div id="resultContainer" style="display:none;">
-        <div class="stock-header">
-          <h2 id="stockName">Stock Analysis</h2>
-          <span id="stockPrice" class="stock-price"></span>
-          <span id="priceChange" class="price-change"></span>
+      <!-- Market Overview Section at the top -->
+      <div class="market-overview-section" style="margin-bottom: 2rem;">
+        <h2 style="font-size: 1.5rem; font-weight: bold; margin-bottom: 1rem;">
+          <i class="fas fa-globe"></i> Market Overview
+        </h2>
+        
+        <div id="overviewLoader" class="loader-container" style="margin-bottom: 1rem;">
+          <div class="loader"></div>
+          <p>Loading market data...</p>
         </div>
         
-        <div class="chart-container">
-          <canvas id="stockChart"></canvas>
+        <div id="global-market-overview" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1rem; margin-bottom: 1.5rem;"></div>
+      </div>
+
+      <!-- Stock Analyzer Section -->
+      <div class="analyzer-section">
+        <h2 style="font-size: 1.5rem; font-weight: bold; margin-bottom: 1rem;">
+          <i class="fas fa-search"></i> Stock Analyzer
+        </h2>
+        
+        <div class="search-container">
+          <input type="text" id="symbolInput" placeholder="Enter stock symbol (e.g. AAPL)">
+          <button id="analyzeBtn" onclick="getStockData()">Analyze</button>
+        </div>
+
+        <div class="chart-type-buttons">
+          <button onclick="setChartType('line')">Line Chart</button>
+          <button onclick="setChartType('candlestick')">Candlestick</button>
+        </div>
+
+        <div class="timeframe-buttons">
+          <button onclick="loadChart('1D')">1D</button>
+          <button onclick="loadChart('1W')">1W</button>
+          <button onclick="loadChart('1M')">1M</button>
+          <button onclick="loadChart('3M')">3M</button>
+          <button onclick="loadChart('1Y')">1Y</button>
+        </div>
+
+        <div id="loaderContainer" class="loader-container" style="display:none;">
+          <div class="loader"></div>
+          <p>Fetching stock data...</p>
         </div>
         
-        <div class="analysis-grid">
-          <div id="insights" class="analysis-card">
-            <h3><i class="fas fa-chart-bar"></i> Key Insights</h3>
-            <div id="insightsContent"></div>
+        <div id="errorContainer" class="error-container" style="display:none;">
+          <i class="fas fa-exclamation-triangle"></i>
+          <p id="errorMessage"></p>
+        </div>
+        
+        <div id="resultContainer" style="display:none;">
+          <div class="stock-header">
+            <h2 id="stockName">Stock Analysis</h2>
+            <span id="stockPrice" class="stock-price"></span>
+            <span id="priceChange" class="price-change"></span>
           </div>
           
-          <div id="prediction" class="analysis-card">
-            <h3><i class="fas fa-magic"></i> Predictions</h3>
-            <div id="predictionContent"></div>
+          <div class="chart-container">
+            <canvas id="stockChart"></canvas>
           </div>
           
-          <div id="technicals" class="analysis-card">
-            <h3><i class="fas fa-calculator"></i> Technical Indicators</h3>
-            <div id="technicalsContent"></div>
+          <div class="analysis-grid">
+            <div id="insights" class="analysis-card">
+              <h3><i class="fas fa-chart-bar"></i> Key Insights</h3>
+              <div id="insightsContent"></div>
+            </div>
+            
+            <div id="prediction" class="analysis-card">
+              <h3><i class="fas fa-magic"></i> Predictions</h3>
+              <div id="predictionContent"></div>
+            </div>
+            
+            <div id="technicals" class="analysis-card">
+              <h3><i class="fas fa-calculator"></i> Technical Indicators</h3>
+              <div id="technicalsContent"></div>
+            </div>
           </div>
         </div>
       </div>
@@ -75,15 +109,6 @@
         <p>Loading latest news...</p>
       </div>
       <div id="newsContent" class="news-grid"></div>
-    </section>
-
-    <section id="overview" style="display:none;">
-      <h2><i class="fas fa-globe"></i> Global Market Overview</h2>
-      <div id="overviewLoader" class="loader-container">
-        <div class="loader"></div>
-        <p>Loading market data...</p>
-      </div>
-      <div id="overviewContent" class="market-grid"></div>
     </section>
 
     <section id="knowledge" style="display:none;">
@@ -122,10 +147,15 @@
   </main>
 
   <footer>
-    <p>&copy; 2025 Stock Wise | Data provided by Alpha Vantage</p>
+    <p>&copy; 2025 Stock Wise | Kueh Pang Teng 1211112304</p>
     <p class="disclaimer">This application is for educational purposes only. Not financial advice.</p>
   </footer>
 
   <script src="js/main.js"></script>
+  <script src="js/analysis.js"></script>
+  <script src="js/chart.js"></script>
+  <script src="js/news.js"></script>
+  <script src="js/overview.js"></script>
+  <script src="js/knowledge.js"></script>
 </body>
 </html>
