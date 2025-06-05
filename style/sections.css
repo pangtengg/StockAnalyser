@@ -1,8 +1,13 @@
 /* sections.css */
+/* STOCK HEADER */
 .stock-header {
   display: flex;
   align-items: center;
+  gap: 1rem;
   margin-bottom: 2rem;
+  padding: 1rem;
+  background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+  border-radius: 10px;
   flex-wrap: wrap;
 }
 
@@ -11,55 +16,182 @@
 }
 
 .stock-price {
-  font-size: 1.5rem;
+  font-size: 2rem;
   font-weight: bold;
-  margin-right: 0.75rem;
+  color: #2a5298;
 }
 
 .price-change {
-  padding: 0.25rem 0.75rem;
-  border-radius: 100px;
-  font-weight: bold;
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  font-weight: 600;
 }
 
-.price-up {
-  background-color: rgba(46, 204, 113, 0.15);
-  color: #27ae60;
+.price-up,
+.price-change.positive {
+  background-color: #d4edda;
+  color: #155724;
 }
 
-.price-down {
-  background-color: rgba(231, 76, 60, 0.15);
-  color: #e74c3c;
+.price-down,
+.price-change.negative {
+  background-color: #f8d7da;
+  color: #721c24;
 }
 
+/* SEARCH CONTAINER */
+.search-container {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+#symbolInput {
+  flex: 1;
+  padding: 1rem;
+  border: 2px solid #e0e0e0;
+  border-radius: 10px;
+  font-size: 1rem;
+  outline: none;
+  transition: border-color 0.3s ease;
+}
+
+#symbolInput:focus {
+  border-color: #2a5298;
+}
+
+.search-container input {
+  flex: 1;
+  padding: 0.5rem;
+  font-size: 1rem;
+}
+
+.search-container button {
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+#analyzeBtn {
+  padding: 1rem 2rem;
+  background: linear-gradient(135deg, #2a5298, #1e3c72);
+  color: white;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+#analyzeBtn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(42, 82, 152, 0.4);
+}
+
+/* BUTTONS */
+.button-group {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+}
+
+.chart-type-buttons,
+.timeframe-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.chart-type-buttons button,
+.timeframe-buttons button {
+  padding: 0.4rem 0.8rem;
+  font-size: 0.95rem;
+  cursor: pointer;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background: white;
+}
+
+.chart-type-buttons button:hover,
+.timeframe-buttons button:hover {
+  background: #f0f0f0;
+}
+
+.btn,
+.tool-btn {
+  padding: 0.5rem 1rem;
+  border: 1px solid #ddd;
+  background: white;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn:hover,
+.btn.active,
+.tool-btn:hover,
+.tool-btn.active {
+  background: #2a5298;
+  color: white;
+  border-color: #2a5298;
+}
+
+/* CHART AREA */
 .chart-container {
   position: relative;
-  height: 400px;
-  margin: 20px 0;
-  margin-bottom: 15rem;
+  height: 500px;
+  margin-bottom: 2rem;
+  background: white;
+  border-radius: 10px;
+  padding: 1rem;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
 }
 
+.chart-controls {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+  margin-bottom: 2rem;
+  padding: 1rem;
+  background: #f8f9fa;
+  border-radius: 10px;
+}
+
+.control-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.control-group label {
+  font-weight: 600;
+  color: #555;
+}
+
+/* ANALYSIS CARDS */
 .analysis-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  grid-gap: 1.5rem;
+  gap: 2rem;
+  margin-top: 2rem;
 }
 
 .analysis-card {
   background: #f8f9fa;
-  border-radius: 8px;
   padding: 1.5rem;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.03);
+  border-radius: 10px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
 }
 
 .analysis-card h3 {
-  margin-top: 0;
-  color: #2c3e50;
-  border-bottom: 2px solid #e9ecef;
-  padding-bottom: 0.75rem;
+  color: #2a5298;
   margin-bottom: 1rem;
+  font-size: 1.2rem;
 }
 
+/* METRICS */
 .metric {
   display: flex;
   justify-content: space-between;
@@ -69,6 +201,130 @@
 
 .metric:last-child {
   border-bottom: none;
+}
+
+/* LOADER */
+.loader-container {
+  text-align: center;
+  padding: 2rem;
+}
+
+.loader {
+  width: 50px;
+  height: 50px;
+  border: 5px solid #f3f3f3;
+  border-top: 5px solid #2a5298;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin: 0 auto 1rem;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* ERROR */
+.error-container {
+  text-align: center;
+  padding: 2rem;
+  background: #f8d7da;
+  border-radius: 10px;
+  color: #721c24;
+}
+
+/* DRAWING TOOLS */
+.drawing-tools {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1rem;
+  padding: 1rem;
+  background: #e9ecef;
+  border-radius: 10px;
+}
+
+/* INDICATORS */
+.indicator-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+}
+
+.indicator-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem;
+  background: white;
+  border-radius: 5px;
+  border-left: 4px solid #2a5298;
+}
+
+/* PREDICTIONS */
+.prediction-card {
+  background: linear-gradient(135deg, #e3f2fd, #bbdefb);
+  padding: 1.5rem;
+  border-radius: 10px;
+  text-align: center;
+}
+
+.prediction-value {
+  font-size: 2rem;
+  font-weight: bold;
+  color: #1976d2;
+  margin: 1rem 0;
+}
+
+.confidence-bar {
+  width: 100%;
+  height: 10px;
+  background: #e0e0e0;
+  border-radius: 5px;
+  overflow: hidden;
+  margin: 1rem 0;
+}
+
+.confidence-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #ff5722, #ff9800, #4caf50);
+  transition: width 0.5s ease;
+}
+
+/* FOOTER */
+footer {
+  text-align: center;
+  padding: 2rem;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  color: white;
+  margin-top: 2rem;
+}
+
+.disclaimer {
+  font-size: 0.9rem;
+  opacity: 0.8;
+  margin-top: 0.5rem;
+}
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+  nav {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .chart-controls {
+    grid-template-columns: 1fr;
+  }
+
+  .analysis-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .stock-header {
+    flex-direction: column;
+    text-align: center;
+  }
 }
 
 .news-grid {

@@ -1,5 +1,6 @@
-// const ALPHA_VANTAGE_API_KEY = 'VSI4SC8YE7ZOIOZD';
-const ALPHA_VANTAGE_API_KEY = 'YXYHJADJTF1J54Z5';
+// const API_KEY = 'YXYHJADJTF1J54Z5';
+const API_KEY = 'NUNK8MPSE4NGTTVN';
+
 const ETF_SYMBOLS = [
   { symbol: 'SPY', name: 'S&P 500' },
   { symbol: 'DIA', name: 'Dow Jones' },
@@ -17,13 +18,13 @@ async function loadGlobalMarkets() {
     const globalData = await Promise.all(
       ETF_SYMBOLS.map(async (etf) => {
         const response = await fetch(
-          `https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=${etf.symbol}&apikey=${ALPHA_VANTAGE_API_KEY}`
+          `https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=${etf.symbol}&apikey=${API_KEY}`
         );
         const data = await response.json();
         const quote = data['Global Quote'];
 
         if (!quote || Object.keys(quote).length === 0) {
-        throw new Error("No data found for symbol");
+          throw new Error("No data found for symbol: " + etf.symbol);
         }
 
         return {
@@ -39,74 +40,51 @@ async function loadGlobalMarkets() {
     renderMarketDataAlpha(globalData);
   } catch (error) {
     console.error('Alpha Vantage API Error:', error);
-    loadMockMarketData();
+    loadMockMarketData(); // fallback
   } finally {
     if (overviewLoader) overviewLoader.style.display = 'none';
   }
 }
 
 function renderMarketDataAlpha(indices) {
-  console.log('Rendering market data:', indices); // Debug log
-  
-  const globalMarketOverview = document.getElementById('global-market-overview');
-  console.log('Market overview element:', globalMarketOverview); // Debug log
-
-  if (globalMarketOverview) {
-    globalMarketOverview.innerHTML = indices.map(index => `
-      <div class="bg-white p-4 shadow rounded mb-2">
-        <h4 class="font-bold">${index.name}</h4>
-        <p>Price: $${index.price.toFixed(2)}</p>
-        <p class="${index.change >= 0 ? 'text-green-600' : 'text-red-600'}">
-          Change: ${index.change >= 0 ? '+' : ''}${index.change.toFixed(2)} (${index.changePercent.toFixed(2)}%)
-        </p>
-      </div>
-    `).join('');
-    
-    console.log('HTML updated:', globalMarketOverview.innerHTML); // Debug log
-  }
-}
-
-function renderMarketDataAlpha(indices) {
   console.log('Rendering enhanced market data:', indices);
-  
-  const globalMarketOverview = document.getElementById('global-market-overview');
-  
+
+  const globalMarketOverview = document.getElementById('global-market-data');
+
   if (globalMarketOverview) {
     globalMarketOverview.innerHTML = indices.map((index, i) => {
       const isPositive = index.change >= 0;
       const changeClass = isPositive ? 'positive' : 'negative';
-      const cardClass = isPositive ? '' : 'negative';
       const arrow = isPositive ? '↑' : '↓';
-      
+
       return `
-        <div class="market-index-card ${cardClass}" style="animation-delay: ${i * 0.1}s;">
+        <div class="market-index-card ${changeClass}" style="animation-delay: ${i * 0.1}s;">
           <div class="market-index-header">
             <h4 class="market-index-name">${index.name}</h4>
             <span class="market-index-symbol">${index.symbol}</span>
           </div>
-          
+
           <div class="market-index-price">$${index.price.toFixed(2)}</div>
-          
+
           <div class="market-index-change ${changeClass}">
             <span class="change-arrow">${arrow}</span>
             <span>${isPositive ? '+' : ''}${index.change.toFixed(2)}</span>
-            <span class="change-percentage ${changeClass}">
+            <span class="change-percentage">
               ${Math.abs(index.changePercent).toFixed(2)}%
             </span>
           </div>
         </div>
       `;
     }).join('');
-    
+
     console.log('Enhanced HTML updated successfully');
   } else {
     console.error('global-market-overview element not found!');
   }
 }
 
-// Enhanced loading state
 function showMarketLoading() {
-  const globalMarketOverview = document.getElementById('global-market-overview');
+  const globalMarketOverview = document.getElementById('global-market-data');
   if (globalMarketOverview) {
     globalMarketOverview.innerHTML = Array(6).fill(0).map((_, i) => `
       <div class="market-loading-card" style="animation-delay: ${i * 0.1}s;">

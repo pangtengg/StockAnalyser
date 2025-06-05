@@ -48,7 +48,33 @@ const knowledgeContent = {
     </ul>
     <p>Successful investors diversify their portfolios and maintain a long-term perspective.</p>
   `
+  ,
+    risk: `
+    <h4>Risk Management</h4>
+    <p>Managing risk is critical to successful investing. It involves understanding potential losses and taking steps to reduce them.</p>
+    <p>Key techniques:</p>
+    <ul>
+      <li><strong>Stop-Loss Orders:</strong> Automatically sell a stock at a set price to limit losses</li>
+      <li><strong>Diversification:</strong> Spread investments across different assets to reduce exposure</li>
+      <li><strong>Position Sizing:</strong> Allocate appropriate amounts to each trade</li>
+      <li><strong>Risk/Reward Ratio:</strong> Compare expected profit to potential loss</li>
+    </ul>
+    <p>Use these tools to build a resilient portfolio that can withstand market volatility.</p>
+  `,
+  psychology: `
+    <h4>Market Psychology</h4>
+    <p>Investor behavior is heavily influenced by emotions, biases, and group dynamics. Understanding this can help you avoid common pitfalls.</p>
+    <p>Key concepts:</p>
+    <ul>
+      <li><strong>Fear and Greed:</strong> Two dominant forces driving market movements</li>
+      <li><strong>Herd Behavior:</strong> Following the crowd can lead to poor decisions</li>
+      <li><strong>Overconfidence:</strong> Leads to excessive risk-taking</li>
+      <li><strong>Loss Aversion:</strong> The tendency to fear losses more than valuing gains</li>
+    </ul>
+    <p>Staying rational and sticking to your plan is key to overcoming emotional investing.</p>
+  `
 };
+
 
 function expandKnowledge(topic) {
   const contentId = `${topic}-content`;
@@ -66,3 +92,4 @@ function expandKnowledge(topic) {
     btn.textContent = 'Learn More';
   }
 }
+

@@ -133,7 +133,7 @@ async function getStockDataAlternative(symbol) {
   showInsights(prices);
   showPrediction(prices);
   showTechnicals(prices);
-  loadChart(currentTimeframe);
+  // loadChart(currentTimeframe);
   
   document.getElementById('resultContainer').style.display = 'block';
 }
@@ -164,7 +164,7 @@ async function getDailyDataAndAnalysis(symbol) {
     }
     
     // Load chart with current timeframe
-    loadChart(currentTimeframe);
+    // loadChart(currentTimeframe);
     
   } catch (err) {
     console.error('Error getting daily data:', err);
@@ -234,36 +234,169 @@ function showPrediction(prices) {
   `;
 }
 
+// analysis.js
+
 function showTechnicals(prices) {
-  if (!prices || prices.length === 0) return;
-  
-  const validPrices = prices.filter(p => !isNaN(p) && p > 0);
-  if (validPrices.length < 2) return;
-  
-  // Calculate RSI
-  const changes = [];
-  for (let i = 1; i < validPrices.length; i++) {
-    changes.push(validPrices[i] - validPrices[i-1]);
-  }
-  
-  const gains = changes.filter(c => c > 0);
-  const losses = changes.filter(c => c < 0).map(c => Math.abs(c));
-  
-  const avgGain = gains.length > 0 ? gains.reduce((a, b) => a + b, 0) / gains.length : 0;
-  const avgLoss = losses.length > 0 ? losses.reduce((a, b) => a + b, 0) / losses.length : 0;
-  
-  let rsi = 50; // Default neutral RSI
-  if (avgLoss !== 0) {
-    const rs = avgGain / avgLoss;
-    rsi = 100 - (100 / (1 + rs));
-  }
-  
-  const ma10Count = Math.min(10, validPrices.length);
-  const ma10 = validPrices.slice(-ma10Count).reduce((a, b) => a + b, 0) / ma10Count;
-  
-  document.getElementById('technicalsContent').innerHTML = `
-    <p>📊 RSI (${changes.length}): ${rsi.toFixed(2)}</p>
-    <p>${rsi > 70 ? '⚠️ Overbought' : rsi < 30 ? '⚠️ Oversold' : '✅ Neutral'}</p>
-    <p>📈 Moving Average (${ma10Count}): $${ma10.toFixed(2)}</p>
-  `;
+    if (!prices || prices.length < 14) {
+        document.getElementById('technicalIndicators').innerHTML = '<p>Not enough data for technical analysis</p>';
+        return;
+    }
+
+    // Calculate SMA (14-day)
+    const sma14 = calculateSMA(prices, 14);
+    const sma50 = calculateSMA(prices, 50);
+    
+    // Calculate RSI
+    const rsi = calculateRSI(prices, 14);
+    
+    // Calculate MACD
+    const { macdLine, signalLine } = calculateMACD(prices);
+    
+    // Calculate Bollinger Bands
+    const { upperBand, lowerBand } = calculateBollingerBands(prices, 20, 2);
+    
+    const lastPrice = prices[prices.length - 1];
+    
+    let html = `
+        <div class="indicator">
+            <span>SMA (14):</span>
+            <span class="${lastPrice > sma14 ? 'positive' : 'negative'}">$${sma14.toFixed(2)}</span>
+            ${getTrendIcon(lastPrice, sma14)}
+        </div>
+        <div class="indicator">
+            <span>SMA (50):</span>
+            <span class="${lastPrice > sma50 ? 'positive' : 'negative'}">$${sma50.toFixed(2)}</span>
+            ${getTrendIcon(lastPrice, sma50)}
+        </div>
+        <div class="indicator">
+            <span>RSI (14):</span>
+            <span class="${rsi > 70 ? 'overbought' : rsi < 30 ? 'oversold' : 'neutral'}">${rsi.toFixed(2)}</span>
+            ${rsi > 70 ? '<i class="fas fa-exclamation-triangle" title="Overbought"></i>' : 
+              rsi < 30 ? '<i class="fas fa-exclamation-triangle" title="Oversold"></i>' : ''}
+        </div>
+        <div class="indicator">
+            <span>MACD:</span>
+            <span class="${macdLine > signalLine ? 'positive' : 'negative'}">${(macdLine - signalLine).toFixed(2)}</span>
+            ${macdLine > signalLine ? '<i class="fas fa-arrow-up"></i>' : '<i class="fas fa-arrow-down"></i>'}
+        </div>
+        <div class="indicator">
+            <span>Bollinger:</span>
+            <span>${lastPrice > upperBand ? 'Above Upper' : lastPrice < lowerBand ? 'Below Lower' : 'Within Bands'}</span>
+        </div>
+    `;
+    
+    document.getElementById('technicalIndicators').innerHTML = html;
+}
+
+function calculateSMA(prices, period) {
+    const slice = prices.slice(-period);
+    return slice.reduce((sum, price) => sum + price, 0) / slice.length;
+}
+
+function calculateRSI(prices, period) {
+    let gains = 0;
+    let losses = 0;
+    
+    for (let i = 1; i <= period; i++) {
+        const change = prices[prices.length - i] - prices[prices.length - i - 1];
+        if (change > 0) gains += change;
+        else losses -= change;
+    }
+    
+    const avgGain = gains / period;
+    const avgLoss = losses / period;
+    const rs = avgLoss === 0 ? 100 : avgGain / avgLoss;
+    return 100 - (100 / (1 + rs));
+}
+
+function calculateMACD(prices) {
+    const ema12 = calculateEMA(prices, 12);
+    const ema26 = calculateEMA(prices, 26);
+    const macdLine = ema12 - ema26;
+    const signalLine = calculateEMA(prices.slice(-9), 9); // Simplified signal line
+    
+    return { macdLine, signalLine };
+}
+
+function calculateEMA(prices, period) {
+    const k = 2 / (period + 1);
+    let ema = prices[0];
+    
+    for (let i = 1; i < prices.length; i++) {
+        ema = prices[i] * k + ema * (1 - k);
+    }
+    
+    return ema;
+}
+
+function calculateBollingerBands(prices, period, multiplier) {
+    const sma = calculateSMA(prices, period);
+    const slice = prices.slice(-period);
+    const stdDev = Math.sqrt(slice.reduce((sum, price) => sum + Math.pow(price - sma, 2), 0) / period);
+    
+    return {
+        upperBand: sma + (stdDev * multiplier),
+        lowerBand: sma - (stdDev * multiplier)
+    };
+}
+
+function getTrendIcon(current, reference) {
+    if (current > reference) return '<i class="fas fa-arrow-up trend-up"></i>';
+    if (current < reference) return '<i class="fas fa-arrow-down trend-down"></i>';
+    return '<i class="fas fa-arrows-alt-h"></i>';
+}
+
+// Enhanced prediction with linear regression
+function showPrediction(prices) {
+    if (!prices || prices.length < 10) {
+        document.getElementById('predictionContent').innerHTML = '<p>Not enough data for prediction</p>';
+        return;
+    }
+
+    // Prepare data for linear regression
+    const n = prices.length;
+    let sumX = 0, sumY = 0, sumXY = 0, sumX2 = 0;
+    
+    for (let i = 0; i < n; i++) {
+        sumX += i;
+        sumY += prices[i];
+        sumXY += i * prices[i];
+        sumX2 += i * i;
+    }
+    
+    // Calculate slope (m) and intercept (b)
+    const m = (n * sumXY - sumX * sumY) / (n * sumX2 - sumX * sumX);
+    const b = (sumY - m * sumX) / n;
+    
+    // Predict next day
+    const prediction = m * n + b;
+    const lastPrice = prices[prices.length - 1];
+    const change = ((prediction - lastPrice) / lastPrice * 100).toFixed(2);
+    
+    // Calculate confidence (R-squared)
+    let ssTotal = 0;
+    let ssResidual = 0;
+    const meanY = sumY / n;
+    
+    for (let i = 0; i < n; i++) {
+        ssTotal += Math.pow(prices[i] - meanY, 2);
+        const predicted = m * i + b;
+        ssResidual += Math.pow(prices[i] - predicted, 2);
+    }
+    
+    const rSquared = 1 - (ssResidual / ssTotal);
+    const confidence = Math.min(100, Math.max(0, Math.round(rSquared * 100)));
+    
+    // Update DOM
+    document.getElementById('predictionValue').textContent = `$${prediction.toFixed(2)}`;
+    document.getElementById('confidenceBar').style.width = `${confidence}%`;
+    document.getElementById('confidenceText').textContent = `Confidence: ${confidence}%`;
+    
+    document.getElementById('predictionTrend').innerHTML = `
+        <span class="${change >= 0 ? 'positive' : 'negative'}">
+            ${change >= 0 ? '+' : ''}${change}%
+        </span>
+        <i class="fas fa-${change >= 0 ? 'arrow-up' : 'arrow-down'}"></i>
+        ${change >= 0 ? 'Potential increase' : 'Potential decrease'}
+    `;
 }
