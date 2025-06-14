@@ -1,5 +1,5 @@
-const ALPHA_VANTAGE_API_KEY = 'VSI4SC8YE7ZOIOZD';
-// const ALPHA_VANTAGE_API_KEY = 'YXYHJADJTF1J54Z5';
+// const ALPHA_VANTAGE_API_KEY = 'VSI4SC8YE7ZOIOZD';
+const ALPHA_VANTAGE_API_KEY = 'YXYHJADJTF1J54Z5';
 const ETF_SYMBOLS = [
   { symbol: 'SPY', name: 'S&P 500' },
   { symbol: 'DIA', name: 'Dow Jones' },
@@ -48,10 +48,10 @@ async function loadGlobalMarkets() {
 function renderMarketDataAlpha(indices) {
   console.log('Rendering enhanced market data:', indices);
   
-  const globalMarketOverview = document.getElementById('global-market-overview');
+  const globalMarketData = document.getElementById('global-market-data');
   
-  if (globalMarketOverview) {
-    globalMarketOverview.innerHTML = indices.map((index, i) => {
+  if (globalMarketData) {
+    globalMarketData.innerHTML = indices.map((index, i) => {
       const isPositive = index.change >= 0;
       const changeClass = isPositive ? 'positive' : 'negative';
       const cardClass = isPositive ? '' : 'negative';
@@ -107,7 +107,7 @@ function renderMarketDataAlpha(indices) {
     
     console.log('Enhanced HTML updated successfully');
   } else {
-    console.error('global-market-overview element not found!');
+    console.error('global-market-data element not found!');
   }
 }
 
